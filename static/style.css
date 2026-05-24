@@ -1265,13 +1265,16 @@ code {
   background: var(--blue-light);
 }
 
-/* ─── RESPONSIVE ─────────────────────────────────────────── */
-@media (max-width: 1100px) {
-/* ══════════════════════════════════════════════════════
-   RESPONSIVE — Tablet & Mobile
-   ══════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — Tablet & Mobile (Mobile-First)
+   ══════════════════════════════════════════════════════════════ */
 
-/* ── Tablet (≤ 1100px) ─────────────────────────────── */
+/* ── Bottom Nav Bar (mobile only, hidden on desktop) ──────── */
+.mobile-nav {
+  display: none;
+}
+
+/* ── Tablet (≤ 1100px) ────────────────────────────────────── */
 @media (max-width: 1100px) {
   .stats-grid        { grid-template-columns: repeat(2, 1fr); }
   .about-grid        { grid-template-columns: repeat(2, 1fr); }
@@ -1282,115 +1285,199 @@ code {
   .insights-layout   { grid-template-columns: 1fr; }
 }
 
-/* ── Small Tablet (≤ 900px) ────────────────────────── */
 @media (max-width: 900px) {
-  .feature-bar-row   { grid-template-columns: 1fr; }
-  .data-stats-row    { grid-template-columns: repeat(2, 1fr); }
-  .page-content      { padding: 20px 18px; }
+  .feature-bar-row { grid-template-columns: 1fr; }
+  .data-stats-row  { grid-template-columns: repeat(2, 1fr); }
+  .page-content    { padding: 20px 18px; }
 }
 
-/* ── Mobile (≤ 700px) — sidebar becomes overlay ────── */
+/* ══════════════════════════════════════════════════════════════
+   MOBILE (≤ 700px) — Full app-like experience
+   ══════════════════════════════════════════════════════════════ */
 @media (max-width: 700px) {
 
-  /* Sidebar: full-width overlay, hidden off-screen by default */
-  .sidebar {
-    width: 240px;
-    transform: translateX(-100%);
-    box-shadow: 4px 0 24px rgba(0,0,0,0.15);
-    z-index: 200;
+  /* ── Hide desktop sidebar completely ─────────────────────── */
+  .sidebar          { display: none; }
+  .sidebar-backdrop { display: none !important; }
+  .main-content     { margin-left: 0; }
+
+  /* ── Hide hamburger (not needed with bottom nav) ─────────── */
+  .topbar-toggle { display: none; }
+
+  /* ── Top bar: just theme toggle, right-aligned ───────────── */
+  .topbar {
+    justify-content: space-between;
+    padding: 0 16px;
+    height: 52px;
   }
 
-  /* Show sidebar when open */
-  .sidebar.mobile-open {
-    transform: translateX(0);
+  /* Mobile page title in topbar */
+  .topbar::before {
+    content: attr(data-title);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-main);
   }
 
-  /* Overlay backdrop */
-  .sidebar-backdrop {
-    display: none;
+  /* ── Bottom navigation bar ───────────────────────────────── */
+  .mobile-nav {
+    display: flex;
     position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    z-index: 199;
-    backdrop-filter: blur(2px);
+    bottom: 0; left: 0; right: 0;
+    height: 62px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    z-index: 300;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
   }
-  .sidebar-backdrop.active { display: block; }
 
-  /* Main content takes full width */
-  .main-content { margin-left: 0; }
+  .mobile-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.6rem;
+    font-weight: 500;
+    padding: 6px 4px;
+    transition: color 0.2s, background 0.2s;
+    border-radius: 8px;
+    margin: 4px 2px;
+  }
 
-  /* Show hamburger button on mobile */
-  .topbar { justify-content: space-between; padding: 0 16px; }
-  .topbar-toggle { display: flex; }
+  .mobile-nav-item svg {
+    width: 22px; height: 22px;
+    stroke: currentColor;
+    flex-shrink: 0;
+  }
 
-  /* Page padding */
-  .page-content { padding: 16px 14px; }
+  .mobile-nav-item.active {
+    color: var(--blue);
+    background: var(--blue-light);
+  }
 
-  /* Page title smaller */
-  .page-title { font-size: 1.25rem; }
+  .mobile-nav-item:active {
+    transform: scale(0.92);
+  }
 
-  /* Stats grid → 2 columns */
-  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .stat-card  { padding: 14px 12px; gap: 10px; }
+  /* ── Add bottom padding so content doesn't go under nav ──── */
+  .page-content {
+    padding: 14px 12px 80px;
+  }
+
+  /* ── Page header ─────────────────────────────────────────── */
+  .page-title    { font-size: 1.2rem; }
+  .page-subtitle { font-size: 0.82rem; }
+  .page-header   { margin-bottom: 16px; }
+
+  /* ── Stats cards → 2 columns ─────────────────────────────── */
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .stat-card  { padding: 14px 12px; gap: 10px; border-radius: 12px; }
   .stat-value { font-size: 1.15rem; }
-  .stat-icon  { width: 38px; height: 38px; }
+  .stat-label { font-size: 0.7rem; }
+  .stat-icon  { width: 36px; height: 36px; border-radius: 10px; }
 
-  /* Predict layout → single column */
-  .predict-layout { grid-template-columns: 1fr; gap: 14px; }
-  .predict-form-panel, .predict-result-panel { padding: 18px 16px; }
+  /* ── Dashboard ───────────────────────────────────────────── */
+  .dashboard-body   { grid-template-columns: 1fr; gap: 14px; }
+  .welcome-card     { padding: 18px 16px; }
+  .welcome-title    { font-size: 1rem; }
+  .welcome-text     { font-size: 0.85rem; }
+  .quick-links-card { padding: 16px; }
+  .btn-start        { padding: 14px; font-size: 1rem; border-radius: 12px; }
 
-  /* Form rows → single column */
-  .form-row-2 { grid-template-columns: 1fr; gap: 10px; }
+  /* ── Predict page ────────────────────────────────────────── */
+  .predict-layout      { grid-template-columns: 1fr; gap: 12px; }
+  .predict-form-panel,
+  .predict-result-panel { padding: 18px 14px; border-radius: 14px; }
 
-  /* Amenity row → 3 equal columns (keep) */
+  /* Inputs: 16px font prevents iOS auto-zoom */
+  .select-wrapper select,
+  .input-wrapper input {
+    font-size: 16px;
+    padding: 13px 14px 13px 38px;
+    border-radius: 10px;
+    min-height: 48px;
+  }
+
+  .form-label  { font-size: 0.75rem; margin-bottom: 8px; }
+  .form-group  { margin-bottom: 14px; }
+  .form-row-2  { grid-template-columns: 1fr; gap: 12px; }
+
+  /* Amenities: bigger tap targets */
   .amenity-row { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-  .amenity-box { padding: 10px 6px; }
-  .amenity-emoji { font-size: 1.2rem; }
+  .amenity-box {
+    padding: 14px 6px;
+    border-radius: 12px;
+    min-height: 72px;
+    justify-content: center;
+  }
+  .amenity-emoji { font-size: 1.5rem; }
+  .amenity-label { font-size: 0.7rem; }
 
-  /* Result mini cards → 3 columns (keep) */
+  /* Predict button: big, thumb-friendly */
+  .btn-predict {
+    padding: 16px;
+    font-size: 1rem;
+    border-radius: 12px;
+    margin-top: 8px;
+    min-height: 54px;
+  }
+
+  /* ── Result panel ────────────────────────────────────────── */
+  .result-price-box  { padding: 22px 16px; border-radius: 14px; }
+  .price-box-value   { font-size: 2.2rem; }
+  .rupee-symbol      { font-size: 1.6rem; }
+  .price-box-sqft    { font-size: 0.85rem; }
+
   .result-mini-cards { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-  .mini-card { padding: 10px 8px; }
+  .mini-card  { padding: 10px 6px; border-radius: 10px; }
+  .mini-label { font-size: 0.65rem; }
   .mini-value { font-size: 0.82rem; }
 
-  /* Price value smaller */
-  .price-box-value { font-size: 1.9rem; }
-  .rupee-symbol    { font-size: 1.4rem; }
+  /* Similar properties */
+  .similar-props-box  { border-radius: 12px; padding: 14px 12px; }
+  .similar-item       { padding: 10px 0; gap: 10px; }
+  .similar-img-wrap   { width: 50px; height: 50px; border-radius: 10px; }
+  .similar-title      { font-size: 0.85rem; }
+  .similar-location   { font-size: 0.72rem; }
+  .similar-price      { font-size: 0.85rem; font-weight: 700; }
 
-  /* Dashboard */
-  .dashboard-body  { grid-template-columns: 1fr; }
-  .welcome-card    { padding: 20px 16px; }
-  .welcome-title   { font-size: 1rem; }
-  .quick-links-card { padding: 16px; }
-
-  /* Insights */
+  /* ── Insights ────────────────────────────────────────────── */
   .insights-layout { grid-template-columns: 1fr; }
-  .data-stats-row  { grid-template-columns: repeat(2, 1fr); }
-  .insights-card   { padding: 18px 14px; }
+  .data-stats-row  { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .insights-card, .feature-importance-card, .amenity-impact-card {
+    padding: 16px 14px;
+    border-radius: 14px;
+    margin-bottom: 14px;
+  }
 
-  /* Model info */
+  /* ── Model info ──────────────────────────────────────────── */
   .model-info-layout { grid-template-columns: 1fr; }
   .model-right-panel { grid-template-columns: 1fr; }
 
-  /* About */
-  .about-grid { grid-template-columns: 1fr; }
-
-  /* Sidebar footer visible on mobile overlay */
-  .sidebar-footer { display: block; }
-  .logo-text, .nav-item span { display: flex; }
-  .nav-item { justify-content: flex-start; padding: 10px 16px; }
-
-  /* Similar properties - tighter */
-  .similar-item { gap: 8px; }
-  .similar-img-wrap { width: 42px; height: 42px; }
-  .similar-price { font-size: 0.8rem; }
+  /* ── About ───────────────────────────────────────────────── */
+  .about-grid { grid-template-columns: 1fr; gap: 12px; }
 }
 
-/* ── Very small phones (≤ 400px) ───────────────────── */
+/* ── Very small phones (≤ 400px) ──────────────────────────── */
 @media (max-width: 400px) {
-  .stats-grid         { grid-template-columns: 1fr; }
-  .result-mini-cards  { grid-template-columns: 1fr; gap: 8px; }
-  .amenity-row        { grid-template-columns: 1fr 1fr 1fr; }
-  .page-content       { padding: 12px 10px; }
-  .price-box-value    { font-size: 1.6rem; }
-  .predict-form-panel, .predict-result-panel { padding: 14px 12px; }
+  .stats-grid  { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-card   { padding: 12px 10px; }
+  .stat-value  { font-size: 1rem; }
+
+  .result-mini-cards { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .mini-label { font-size: 0.6rem; }
+
+  .price-box-value   { font-size: 1.8rem; }
+  .predict-form-panel,
+  .predict-result-panel { padding: 14px 12px; }
+
+  .page-content { padding: 12px 10px 80px; }
+  .amenity-box  { padding: 12px 4px; min-height: 65px; }
+  .btn-predict  { padding: 14px; font-size: 0.95rem; }
 }
+
+
