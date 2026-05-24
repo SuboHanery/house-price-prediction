@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% block title %}Model Info — HousePrice AI{% endblock %}
+{% block content %}
+
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+    <h1 class="page-title" style="margin-bottom:0">Model Architecture</h1>
+    <a href="/api/download-model" class="btn-outline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        &nbsp;Download Model
+    </a>
+</div>
+
+<div class="model-info-layout">
+
+    <!-- Left: Pipeline -->
+    <div class="model-pipeline-card">
+        <h2 class="insights-section-title">Scikit-Learn Pipeline</h2>
+        <p class="insights-para">
+            Our backend uses a pre-trained machine learning model
+            (<code>best_house_price_model.pkl</code>) serialized via Pickle.
+            The model is structured as a robust pipeline that automatically handles
+            data transformations before making predictions.
+        </p>
+
+        <div class="pipeline-steps-list">
+            <div class="pipeline-step-item">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <p class="step-title">LabelEncoder (Location)</p>
+                    <p class="step-desc">
+                        Applies <code>LabelEncoder</code> to the categorical <strong>Location</strong> feature,
+                        converting 254 unique Bangalore location names into a mathematical matrix the model can interpret.
+                        Rare locations (fewer than 10 occurrences) are grouped as "other".
+                    </p>
+                </div>
+            </div>
+            <div class="pipeline-step-item">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <p class="step-title">StandardScaler (Scaling)</p>
+                    <p class="step-desc">
+                        Normalizes all 15 numerical features so they have a mean of 0 and standard deviation of 1.
+                        This ensures large numbers like area (sq ft) don't dominate smaller numbers like
+                        bedroom counts during prediction.
+                    </p>
+                </div>
+            </div>
+            <div class="pipeline-step-item">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <p class="step-title">{{ model_name }} (Estimator)</p>
+                    <p class="step-desc">
+                        The core algorithm trained on <strong>10,580</strong> Bangalore property records.
+                        It learns complex non-linear relationships between property features and prices
+                        to predict the final house price in Lakhs (₹).
+                    </p>
+                </div>
+            </div>
+            <div class="pipeline-step-item">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <p class="step-title">Feature Engineering (Derived)</p>
+                    <p class="step-desc">
+                        Additional computed features: <code>total_rooms</code>, <code>area_per_bedroom</code>,
+                        <code>amenities_count</code>, <code>has_multiple_amenities</code>,
+                        <code>high_amenity_property</code> are automatically derived from user inputs.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- All 8 Models Comparison Table -->
+        <h2 class="insights-section-title" style="margin-top:2rem">Algorithm Comparison (All 8 Models)</h2>
+        <table class="impact-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Algorithm</th>
+                    <th>Test R²</th>
+                    <th>RMSE (₹L)</th>
+                    <th>MAE (₹L)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i, row in enumerate(all_results) %}
+                <tr {% if i == 0 %}class="best-model-row"{% endif %}>
+                    <td>
+                        {% if i == 0 %}
+                        <span class="rank-badge rank-gold">🏆 #1</span>
+                        {% elif i == 1 %}
+                        <span class="rank-badge rank-silver">#2</span>
+                        {% elif i == 2 %}
+                        <span class="rank-badge rank-bronze">#3</span>
+                        {% else %}
+                        <span style="color:#999">#{{ i+1 }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <strong>{{ row['Algorithm'] }}</strong>
+                        {% if i == 0 %}<span class="best-badge">Best</span>{% endif %}
+                    </td>
+                    <td><strong>{{ "%.4f"|format(row['Testing R2']) }}</strong></td>
+                    <td>{{ "%.1f"|format(row['RMSE (Test)']) }}</td>
+                    <td>{{ "%.1f"|format(row['MAE (Test)']) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Right: Performance + Model File -->
+    <div class="model-right-panel">
+        <div class="performance-card">
+            <p class="perf-label">Performance</p>
+            <p class="perf-score">{{ (model_accuracy * 100)|round(1) }}%</p>
+            <p class="perf-sublabel">R-Squared Score</p>
+            <p class="perf-desc">
+                The model explains <strong>{{ (model_accuracy * 100)|round(1) }}%</strong>
+                of the variance in Bangalore house prices.
+            </p>
+            <div class="perf-divider"></div>
+            <div class="perf-metrics">
+                <div class="perf-metric-row">
+                    <span class="perf-metric-label">RMSE</span>
+                    <span class="perf-metric-val">₹{{ model_rmse }}L</span>
+                </div>
+                <div class="perf-metric-row">
+                    <span class="perf-metric-label">MAE</span>
+                    <span class="perf-metric-val">₹{{ model_mae }}L</span>
+                </div>
+                <div class="perf-metric-row">
+                    <span class="perf-metric-label">Train Samples</span>
+                    <span class="perf-metric-val">10,580</span>
+                </div>
+                <div class="perf-metric-row">
+                    <span class="perf-metric-label">Test Samples</span>
+                    <span class="perf-metric-val">2,645</span>
+                </div>
+                <div class="perf-metric-row">
+                    <span class="perf-metric-label">Features</span>
+                    <span class="perf-metric-val">15</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="model-file-card">
+            <p class="perf-label">Model File</p>
+            <div class="model-file-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" width="20" height="20"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                <div>
+                    <p class="file-name">best_house_price_model.pkl</p>
+                    <p class="file-size">{{ model_size }} KB</p>
+                </div>
+            </div>
+            <a href="/api/download-model" class="download-link">Download Model File</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

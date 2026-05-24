@@ -1,0 +1,41 @@
+# Exclude large model pkl files — they are auto-trained on the server
+models/best_house_price_model.pkl
+models/scaler.pkl
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and scratch
+*.log
+logs/
+scratch/
+
+# Training intermediate csvs (large)
+X_train_scaled.csv
+X_test_scaled.csv
+y_train_new.csv
+y_test_new.csv
+
+# Phase scripts (not needed in production)
+phase*.py
+restore_model.py

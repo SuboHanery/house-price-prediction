@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% block title %}Data Insights — HousePrice AI{% endblock %}
+{% block content %}
+
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+    <h1 class="page-title" style="margin-bottom:0">Data Insights</h1>
+    <a href="/api/download-model" class="btn-outline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        &nbsp;Download Dataset
+    </a>
+</div>
+
+<div class="insights-layout">
+    <!-- Dataset Overview -->
+    <div class="insights-card">
+        <h2 class="insights-section-title">Dataset Overview</h2>
+        <p class="insights-para">
+            The predictions on this platform are powered by the <strong>Bengaluru House Price dataset</strong>. After
+            extensive cleaning and preprocessing to remove outliers and handle missing values, the dataset
+            consists of high-quality records representing the real estate market.
+        </p>
+
+        <div class="dataset-facts">
+            <div class="fact-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#34a853" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
+                <span><strong>Key Features:</strong> Location, Built-up Area, Bedrooms (BHK), Bathrooms, Gym, Pool, Garden</span>
+            </div>
+            <div class="fact-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#34a853" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
+                <span><strong>Target Variable:</strong> Price (in Lakhs)</span>
+            </div>
+            <div class="fact-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#34a853" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
+                <span><strong>Dimensionality Reduction:</strong> Locations with fewer than 10 data points were grouped into "Other" to prevent model overfitting.</span>
+            </div>
+            <div class="fact-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#34a853" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
+                <span><strong>Amenities Added:</strong> has_gym, has_swimming_pool, has_ground, ground_area_sqft, amenities_count</span>
+            </div>
+            <div class="fact-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#34a853" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
+                <span><strong>Final Dataset:</strong> 13,225 clean rows · 15 ML features · 80/20 train-test split</span>
+            </div>
+        </div>
+
+        <!-- Dataset Stats Row -->
+        <div class="data-stats-row">
+            <div class="data-stat-box">
+                <p class="data-stat-num">13,320</p>
+                <p class="data-stat-label">Raw Records</p>
+            </div>
+            <div class="data-stat-box">
+                <p class="data-stat-num">13,225</p>
+                <p class="data-stat-label">After Cleaning</p>
+            </div>
+            <div class="data-stat-box">
+                <p class="data-stat-num">15</p>
+                <p class="data-stat-label">ML Features</p>
+            </div>
+            <div class="data-stat-box">
+                <p class="data-stat-num">254</p>
+                <p class="data-stat-label">Unique Locations</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Market Trend -->
+    <div class="market-trend-card">
+        <p class="market-trend-label">Market Trend</p>
+        <div class="market-trend-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" width="60" height="60"><polyline points="3 17 9 11 13 15 22 6"/><polyline points="17 6 22 6 22 11"/></svg>
+        </div>
+        <p class="market-trend-text">
+            Real estate prices in prime Bangalore areas have shown a steady
+            <strong>8–12% YoY appreciation.</strong>
+        </p>
+        <div class="trend-chips">
+            <span class="trend-chip">📍 Whitefield +14%</span>
+            <span class="trend-chip">📍 Koramangala +11%</span>
+            <span class="trend-chip">📍 Indiranagar +9%</span>
+        </div>
+    </div>
+</div>
+
+<!-- Feature Importance -->
+<div class="feature-importance-card">
+    <h2 class="insights-section-title">Feature Importance</h2>
+    <p class="insights-para">How much does each factor influence the final property price in our model?</p>
+
+    <div class="feature-bars">
+        <div class="feature-bar-row">
+            <span class="feature-name">Total Square Feet (Area)</span>
+            <div class="bar-track"><div class="bar-fill bar-blue" style="width:92%"></div></div>
+            <span class="impact-label high">High Impact</span>
+        </div>
+        <div class="feature-bar-row">
+            <span class="feature-name">Total Rooms (Bed + Bath)</span>
+            <div class="bar-track"><div class="bar-fill bar-blue" style="width:85%"></div></div>
+            <span class="impact-label high">High Impact</span>
+        </div>
+        <div class="feature-bar-row">
+            <span class="feature-name">Location (Prime vs Suburban)</span>
+            <div class="bar-track"><div class="bar-fill bar-blue" style="width:80%"></div></div>
+            <span class="impact-label high">High Impact</span>
+        </div>
+        <div class="feature-bar-row">
+            <span class="feature-name">Number of Bathrooms</span>
+            <div class="bar-track"><div class="bar-fill bar-yellow" style="width:65%"></div></div>
+            <span class="impact-label medium">Medium Impact</span>
+        </div>
+        <div class="feature-bar-row">
+            <span class="feature-name">Number of Bedrooms (BHK)</span>
+            <div class="bar-track"><div class="bar-fill bar-yellow" style="width:58%"></div></div>
+            <span class="impact-label medium">Medium Impact</span>
+        </div>
+        <div class="feature-bar-row">
+            <span class="feature-name">Area per Bedroom</span>
+            <div class="bar-track"><div class="bar-fill bar-yellow" style="width:50%"></div></div>
+            <span class="impact-label medium">Medium Impact</span>
+        </div>
+        <div class="feature-bar-row">
+            <span class="feature-name">Amenities Count (Gym+Pool+Garden)</span>
+            <div class="bar-track"><div class="bar-fill bar-green" style="width:40%"></div></div>
+            <span class="impact-label low">Moderate Impact</span>
+        </div>
+        <div class="feature-bar-row">
+            <span class="feature-name">Has Gym</span>
+            <div class="bar-track"><div class="bar-fill bar-green" style="width:32%"></div></div>
+            <span class="impact-label low">Moderate Impact</span>
+        </div>
+        <div class="feature-bar-row">
+            <span class="feature-name">Has Swimming Pool</span>
+            <div class="bar-track"><div class="bar-fill bar-green" style="width:28%"></div></div>
+            <span class="impact-label low">Moderate Impact</span>
+        </div>
+        <div class="feature-bar-row">
+            <span class="feature-name">Parking Spaces</span>
+            <div class="bar-track"><div class="bar-fill bar-gray" style="width:15%"></div></div>
+            <span class="impact-label low">Low Impact</span>
+        </div>
+    </div>
+</div>
+
+<!-- Amenity Impact Table -->
+<div class="amenity-impact-card">
+    <h2 class="insights-section-title">Amenity Impact on Price</h2>
+    <p class="insights-para">Properties with premium amenities command significantly higher prices in Bangalore.</p>
+    <table class="impact-table">
+        <thead>
+            <tr>
+                <th>Amenity</th>
+                <th>Properties With</th>
+                <th>Avg Price (With)</th>
+                <th>Avg Price (Without)</th>
+                <th>Price Premium</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="amenity-badge">💪 Gym</span></td>
+                <td>6,703 (50.3%)</td>
+                <td>₹137.5L</td>
+                <td>₹87.3L</td>
+                <td><span class="premium-badge premium-high">+57.5%</span></td>
+            </tr>
+            <tr>
+                <td><span class="amenity-badge">🏊 Swimming Pool</span></td>
+                <td>2,696 (20.2%)</td>
+                <td>₹157.2L</td>
+                <td>₹101.2L</td>
+                <td><span class="premium-badge premium-high">+55.3%</span></td>
+            </tr>
+            <tr>
+                <td><span class="amenity-badge">🌿 Garden/Ground</span></td>
+                <td>6,696 (50.3%)</td>
+                <td>₹114.2L</td>
+                <td>₹111.0L</td>
+                <td><span class="premium-badge premium-low">+2.9%</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

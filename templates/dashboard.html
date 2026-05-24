@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — House Price Prediction{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h1 class="page-title">Dashboard Overview</h1>
+</div>
+
+<!-- ── Stats Cards ── -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon stat-icon-blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+        </div>
+        <div class="stat-info">
+            <p class="stat-label">Total Properties Analyzed</p>
+            <p class="stat-value">{{ total_props }}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon stat-icon-green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        </div>
+        <div class="stat-info">
+            <p class="stat-label">Average Price (Bangalore)</p>
+            <p class="stat-value">{{ avg_price }}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon stat-icon-yellow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div class="stat-info">
+            <p class="stat-label">Locations Covered</p>
+            <p class="stat-value">{{ num_locations }}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon stat-icon-teal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <div class="stat-info">
+            <p class="stat-label">Model Accuracy (R²)</p>
+            <p class="stat-value">{{ model_accuracy }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- ── Welcome + Quick Links ── -->
+<div class="dashboard-body">
+    <div class="welcome-card">
+        <h2 class="welcome-title">Welcome to Bangalore Real Estate Predictor</h2>
+        <p class="welcome-text">
+            This dashboard uses advanced machine learning to help you estimate the market price of
+            properties in Bangalore, India. Whether you are a buyer looking for the right deal or a seller
+            trying to set a competitive price, our AI tool leverages <strong>13,320 real-world property
+            transactions</strong> to give you an accurate estimate.
+        </p>
+        <p class="welcome-text" style="margin-top:0.9rem;">
+            To get started, head over to the <a href="{{ url_for('predict_page') }}" class="inline-link">Predict Price</a>
+            page and enter the details of the property you are interested in.
+        </p>
+
+        <!-- Highlights -->
+        <div class="highlight-chips">
+            <div class="chip chip-blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
+                13,320 Properties
+            </div>
+            <div class="chip chip-green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
+                8 ML Algorithms
+            </div>
+            <div class="chip chip-purple">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
+                Gym · Pool · Garden Features
+            </div>
+            <div class="chip chip-orange">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
+                6 Project Phases
+            </div>
+        </div>
+
+        <a href="{{ url_for('predict_page') }}" class="btn-start">
+            Start Predicting &nbsp;→
+        </a>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="quick-links-card">
+        <h3 class="quick-title">Quick Links</h3>
+        <a href="{{ url_for('insights') }}" class="quick-item">
+            <div class="quick-item-icon quick-icon-blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            View Market Insights
+        </a>
+        <a href="{{ url_for('model_info') }}" class="quick-item">
+            <div class="quick-item-icon quick-icon-teal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            How the AI Works
+        </a>
+        <a href="{{ url_for('about') }}" class="quick-item">
+            <div class="quick-item-icon quick-icon-purple">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            About the Developer
+        </a>
+
+        <!-- Project Pipeline -->
+        <div class="pipeline-box">
+            <p class="pipeline-title">Project Pipeline</p>
+            <div class="pipeline-steps">
+                <div class="pipeline-step done">1 Data Enhancement</div>
+                <div class="pipeline-step done">2 Cleaning</div>
+                <div class="pipeline-step done">3 Features</div>
+                <div class="pipeline-step done">4 Training</div>
+                <div class="pipeline-step done">5 Save Model</div>
+                <div class="pipeline-step done">6 Deploy</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

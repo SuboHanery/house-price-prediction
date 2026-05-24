@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% block title %}Predict Price — HousePrice AI{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h1 class="page-title">House Price Prediction</h1>
+    <p class="page-subtitle">Enter property details to get an estimated market price using our <span class="text-blue">machine learning model</span>.</p>
+</div>
+
+<div class="predict-layout">
+
+    <!-- ── LEFT: Property Details Form ── -->
+    <div class="predict-form-panel">
+        <div class="panel-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+            Property Details
+        </div>
+
+        <form id="predictForm">
+            <!-- Location -->
+            <div class="form-group">
+                <label class="form-label">Location</label>
+                <div class="select-wrapper">
+                    <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <select name="location" id="location" required>
+                        <option value="">Select a location in Bangalore</option>
+                        {% for loc in localities %}
+                        <option value="{{ loc }}">{{ loc }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Area -->
+            <div class="form-group">
+                <label class="form-label">Built-up Area (sq ft)</label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                    <input type="number" name="area_sqft" id="area_sqft" placeholder="e.g. 1200" min="200" max="20000" required>
+                </div>
+            </div>
+
+            <!-- Bedrooms & Bathrooms -->
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label">Bedrooms (BHK)</label>
+                    <div class="select-wrapper">
+                        <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M2 4v16M22 4v16M2 8h20M2 16h20"/></svg>
+                        <select name="bedrooms" id="bedrooms" required>
+                            <option value="">Select BHK</option>
+                            <option value="1">1 BHK</option>
+                            <option value="2">2 BHK</option>
+                            <option value="3">3 BHK</option>
+                            <option value="4">4 BHK</option>
+                            <option value="5">5+ BHK</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bathrooms</label>
+                    <div class="select-wrapper">
+                        <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M4 12h16M4 12a2 2 0 01-2-2V6a2 2 0 012-2h12M22 12v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4"/></svg>
+                        <select name="bathrooms" id="bathrooms" required>
+                            <option value="">Select Baths</option>
+                            <option value="1">1 Bath</option>
+                            <option value="2">2 Baths</option>
+                            <option value="3">3 Baths</option>
+                            <option value="4">4+ Baths</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parking -->
+            <div class="form-group">
+                <label class="form-label">Parking Spaces</label>
+                <div class="select-wrapper">
+                    <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8zM5.5 19a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM18.5 19a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg>
+                    <select name="parking" id="parking">
+                        <option value="0">No Parking</option>
+                        <option value="1" selected>1 Space</option>
+                        <option value="2">2 Spaces</option>
+                        <option value="3">3+ Spaces</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Amenities -->
+            <div class="form-group">
+                <label class="form-label">Amenities</label>
+                <div class="amenity-row">
+                    <label class="amenity-toggle" id="toggle-gym">
+                        <input type="checkbox" name="has_gym" id="has_gym" value="1">
+                        <span class="amenity-box">
+                            <span class="amenity-emoji">💪</span>
+                            <span class="amenity-label">Gym</span>
+                        </span>
+                    </label>
+                    <label class="amenity-toggle" id="toggle-pool">
+                        <input type="checkbox" name="has_swimming_pool" id="has_swimming_pool" value="1">
+                        <span class="amenity-box">
+                            <span class="amenity-emoji">🏊</span>
+                            <span class="amenity-label">Swimming Pool</span>
+                        </span>
+                    </label>
+                    <label class="amenity-toggle" id="toggle-ground">
+                        <input type="checkbox" name="has_ground" id="has_ground" value="1">
+                        <span class="amenity-box">
+                            <span class="amenity-emoji">🌿</span>
+                            <span class="amenity-label">Garden</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn-predict" id="predictBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                &nbsp;Predict Price
+            </button>
+        </form>
+
+        <p class="predict-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Note: This is an estimated price prediction and actual market price may vary.
+        </p>
+    </div>
+
+    <!-- ── RIGHT: Prediction Result ── -->
+    <div class="predict-result-panel">
+        <div class="panel-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Prediction Result
+        </div>
+
+        <!-- Price Display -->
+        <div class="result-price-box" id="pricebox">
+            <p class="price-box-label">Estimated Market Price</p>
+            <p class="price-box-value" id="resultPrice">
+                <span class="rupee-symbol">₹</span><span id="priceNum">--</span>
+            </p>
+            <p class="price-box-sqft" id="resultSqft">(₹ -- per sq ft)</p>
+        </div>
+
+        <!-- Three mini-cards -->
+        <div class="result-mini-cards">
+            <div class="mini-card">
+                <p class="mini-label">Price Range</p>
+                <p class="mini-value" id="resultRange">--</p>
+            </div>
+            <div class="mini-card">
+                <p class="mini-label">Model Confidence</p>
+                <p class="mini-value" id="resultConfidence">--</p>
+            </div>
+            <div class="mini-card">
+                <p class="mini-label">Compared Properties</p>
+                <p class="mini-value" id="resultCompared">--</p>
+            </div>
+        </div>
+
+        <!-- Similar Properties -->
+        <div class="similar-props-box" id="similarBox">
+            <div class="similar-header">
+                <p class="mini-label">Similar Properties</p>
+                <a href="#" class="view-all-link">View All</a>
+            </div>
+            <div id="similarList">
+                <p style="font-size:0.82rem;color:var(--text-muted);padding:10px 0;text-align:center;">
+                    Predict a price to see similar properties
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

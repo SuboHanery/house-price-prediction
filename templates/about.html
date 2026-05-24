@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block title %}About — HousePrice AI{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h1 class="page-title">About the Project</h1>
+</div>
+
+<div class="about-hero-card">
+    <div class="about-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="1.5" width="54" height="54"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+    </div>
+    <h2 class="about-hero-title">Bangalore House Price Predictor</h2>
+    <p class="about-hero-desc">
+        This project was built as a complete end-to-end <strong>Machine Learning web application</strong>.
+        It demonstrates the full lifecycle of a data science project — from data enhancement and cleaning,
+        feature engineering, training 8 ML algorithms, saving the best model, and deploying with
+        a Flask backend and modern responsive frontend.
+    </p>
+</div>
+
+<!-- Tech Stack -->
+<div class="about-grid">
+    <div class="about-tech-card">
+        <div class="tech-card-header">
+            <div class="tech-icon tech-icon-blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            Backend
+        </div>
+        <ul class="tech-list">
+            <li><a href="#">Python 3</a></li>
+            <li><a href="#">Flask Web Framework</a></li>
+            <li><a href="#">Pandas &amp; NumPy</a></li>
+            <li><a href="#">Pickle Serialization</a></li>
+        </ul>
+    </div>
+
+    <div class="about-tech-card">
+        <div class="tech-card-header">
+            <div class="tech-icon tech-icon-green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            </div>
+            Frontend
+        </div>
+        <ul class="tech-list">
+            <li><a href="#">HTML5 &amp; Vanilla CSS</a></li>
+            <li><a href="#">JavaScript (Fetch API)</a></li>
+            <li><a href="#">Google Fonts (Inter)</a></li>
+            <li><a href="#">Responsive Design</a></li>
+        </ul>
+    </div>
+
+    <div class="about-tech-card">
+        <div class="tech-card-header">
+            <div class="tech-icon tech-icon-purple">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            Machine Learning
+        </div>
+        <ul class="tech-list">
+            <li><a href="#">Scikit-Learn</a></li>
+            <li><a href="#">Random Forest (Best)</a></li>
+            <li><a href="#">StandardScaler</a></li>
+            <li><a href="#">8 Algorithms Compared</a></li>
+        </ul>
+    </div>
+
+    <div class="about-tech-card">
+        <div class="tech-card-header">
+            <div class="tech-icon tech-icon-orange">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+            </div>
+            Project Files
+        </div>
+        <ul class="tech-list">
+            <li><a href="#">Bengaluru_House_Data.csv</a></li>
+            <li><a href="#">best_house_price_model.pkl</a></li>
+            <li><a href="#">enhanced_house_data.csv</a></li>
+            <li><a href="#">model_comparison_results.csv</a></li>
+        </ul>
+    </div>
+</div>
+
+<!-- Project Phases Timeline -->
+<div class="about-timeline-card">
+    <h2 class="insights-section-title">Project Pipeline — 6 Phases</h2>
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="timeline-dot dot-done">✓</div>
+            <div class="timeline-body">
+                <p class="timeline-title">Phase 1 — Data Enhancement</p>
+                <p class="timeline-desc">Added <strong>has_gym</strong>, <strong>has_swimming_pool</strong>, <strong>has_ground</strong>, <strong>ground_area_sqft</strong>, and <strong>amenities_count</strong> to 13,320 properties using realistic probability logic based on price tiers.</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-dot dot-done">✓</div>
+            <div class="timeline-body">
+                <p class="timeline-title">Phase 2 — Data Cleaning &amp; Exploration</p>
+                <p class="timeline-desc">Removed 75 duplicates, handled 6,201 missing values via median imputation, detected outliers via IQR method. Generated 5 sets of dark-themed visualizations (histograms, box plots, heatmap, scatter plots, bar charts).</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-dot dot-done">✓</div>
+            <div class="timeline-body">
+                <p class="timeline-title">Phase 3 — Feature Engineering &amp; Preprocessing</p>
+                <p class="timeline-desc">Derived 5 new features: total_rooms, room_per_area, has_multiple_amenities, area_per_bedroom, high_amenity_property. Applied StandardScaler. Split 80/20 (10,580 train / 2,645 test).</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-dot dot-done">✓</div>
+            <div class="timeline-body">
+                <p class="timeline-title">Phase 4 — Model Training &amp; Comparison</p>
+                <p class="timeline-desc">Trained and compared 8 algorithms: Linear Regression, Ridge, Lasso, Decision Tree, <strong>Random Forest (Best — R²=60.5%)</strong>, Gradient Boosting, SVR, and AdaBoost.</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-dot dot-done">✓</div>
+            <div class="timeline-body">
+                <p class="timeline-title">Phase 5 — Save Best Model</p>
+                <p class="timeline-desc">Saved <strong>best_house_price_model.pkl</strong>, <strong>scaler.pkl</strong>, <strong>feature_names.pkl</strong>, <strong>label_encoder_location.pkl</strong>, and <strong>model_info.txt</strong> to the models/ directory.</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-dot dot-done">✓</div>
+            <div class="timeline-body">
+                <p class="timeline-title">Phase 6 — Flask Web Application</p>
+                <p class="timeline-desc">Built this full dashboard UI with 5 pages: Dashboard, Predict Price, Data Insights, Model Info, and About. AJAX-based prediction with live results panel.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
