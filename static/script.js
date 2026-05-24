@@ -321,3 +321,65 @@ function showFormError(msg) {
 }
 
 console.log('HousePrice AI — Ready!');
+
+// ─── PWA: Register Service Worker ─────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .then(reg => console.log('SW registered:', reg.scope))
+            .catch(err => console.log('SW failed:', err));
+    });
+}
+
+// ─── PWA: Show Install Banner ─────────────────────────────────────────────────
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    // Show a subtle install banner at the top
+    const banner = document.createElement('div');
+    banner.id = 'installBanner';
+    banner.innerHTML = `
+        <div style="
+            position:fixed; top:0; left:0; right:0; z-index:999;
+            background:linear-gradient(135deg,#1a73e8,#0d47a1);
+            color:white; padding:12px 16px;
+            display:flex; align-items:center; justify-content:space-between;
+            font-size:0.85rem; font-weight:500;
+            box-shadow:0 2px 12px rgba(0,0,0,0.2);
+        ">
+            <span>🏠 Install House Price App on your phone!</span>
+            <div style="display:flex;gap:8px;">
+                <button id="installBtn" style="
+                    background:white; color:#1a73e8; border:none;
+                    padding:6px 14px; border-radius:20px;
+                    font-weight:700; cursor:pointer; font-size:0.82rem;
+                ">Install</button>
+                <button id="dismissBanner" style="
+                    background:transparent; color:rgba(255,255,255,0.8);
+                    border:none; cursor:pointer; font-size:1.1rem; padding:2px 6px;
+                ">✕</button>
+            </div>
+        </div>
+    `;
+    document.body.prepend(banner);
+
+    document.getElementById('installBtn').addEventListener('click', () => {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(choice => {
+            if (choice.outcome === 'accepted') banner.remove();
+            deferredPrompt = null;
+        });
+    });
+
+    document.getElementById('dismissBanner').addEventListener('click', () => {
+        banner.remove();
+    });
+});
+
+window.addEventListener('appinstalled', () => {
+    const banner = document.getElementById('installBanner');
+    if (banner) banner.remove();
+    console.log('PWA installed!');
+});

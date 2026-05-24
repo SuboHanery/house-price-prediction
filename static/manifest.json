@@ -1,0 +1,36 @@
+{
+  "name": "House Price Prediction",
+  "short_name": "HousePrice",
+  "description": "Predict Bangalore house prices instantly using AI",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f9fa",
+  "theme_color": "#1a73e8",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/static/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "utilities"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Predict Price",
+      "short_name": "Predict",
+      "description": "Go directly to price prediction",
+      "url": "/predict",
+      "icons": [{ "src": "/static/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

@@ -275,6 +275,18 @@ def model_info():
 def about():
     return render_template('about.html', active='about')
 
+# ─── PWA Routes ───────────────────────────────────────────────────────────────
+@app.route('/manifest.json')
+def manifest():
+    return send_file('static/manifest.json', mimetype='application/manifest+json')
+
+@app.route('/sw.js')
+def service_worker():
+    response = send_file('static/sw.js', mimetype='application/javascript')
+    response.headers['Service-Worker-Allowed'] = '/'
+    response.headers['Cache-Control'] = 'no-cache'
+    return response
+
 @app.route('/api/download-model')
 def download_model():
     try:
