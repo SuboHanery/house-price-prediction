@@ -15,7 +15,46 @@ function randomHouseImg(seed) {
     return HOUSE_IMAGES[seed % HOUSE_IMAGES.length];
 }
 
-// ─── Theme Toggle ─────────────────────────────────────────────────────────────
+// ─── Sidebar Toggle (desktop collapse + mobile overlay) ───────────────────────
+function toggleSidebar() {
+    const sidebar  = document.getElementById('sidebar');
+    const main     = document.getElementById('mainContent');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    const isMobile = window.innerWidth <= 700;
+
+    if (isMobile) {
+        // Mobile: slide-in overlay
+        const isOpen = sidebar.classList.contains('mobile-open');
+        if (isOpen) {
+            closeSidebar();
+        } else {
+            sidebar.classList.add('mobile-open');
+            backdrop.classList.add('active');
+            document.body.style.overflow = 'hidden'; // prevent scroll behind
+        }
+    } else {
+        // Desktop: collapse/expand
+        const collapsed = sidebar.classList.toggle('collapsed');
+        main.style.marginLeft = collapsed ? '0' : 'var(--sidebar-w)';
+    }
+}
+
+function closeSidebar() {
+    const sidebar  = document.getElementById('sidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    sidebar.classList.remove('mobile-open');
+    backdrop.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Close sidebar on resize if switching to desktop
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 700) {
+        closeSidebar();
+        document.body.style.overflow = '';
+    }
+});
+
 function toggleTheme() {
     const html  = document.documentElement;
     const moon  = document.getElementById('moonIcon');

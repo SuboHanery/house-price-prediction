@@ -1267,28 +1267,130 @@ code {
 
 /* ─── RESPONSIVE ─────────────────────────────────────────── */
 @media (max-width: 1100px) {
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE — Tablet & Mobile
+   ══════════════════════════════════════════════════════ */
+
+/* ── Tablet (≤ 1100px) ─────────────────────────────── */
+@media (max-width: 1100px) {
   .stats-grid        { grid-template-columns: repeat(2, 1fr); }
   .about-grid        { grid-template-columns: repeat(2, 1fr); }
   .model-info-layout { grid-template-columns: 1fr; }
   .model-right-panel { grid-template-columns: 1fr 1fr; display: grid; gap: 16px; }
+  .predict-layout    { grid-template-columns: 1fr; }
+  .dashboard-body    { grid-template-columns: 1fr; }
+  .insights-layout   { grid-template-columns: 1fr; }
 }
 
+/* ── Small Tablet (≤ 900px) ────────────────────────── */
 @media (max-width: 900px) {
-  .dashboard-body    { grid-template-columns: 1fr; }
-  .predict-layout    { grid-template-columns: 1fr; }
-  .insights-layout   { grid-template-columns: 1fr; }
   .feature-bar-row   { grid-template-columns: 1fr; }
   .data-stats-row    { grid-template-columns: repeat(2, 1fr); }
+  .page-content      { padding: 20px 18px; }
 }
 
+/* ── Mobile (≤ 700px) — sidebar becomes overlay ────── */
 @media (max-width: 700px) {
-  :root { --sidebar-w: 60px; }
-  .logo-text, .nav-item span, .sidebar-footer { display: none; }
-  .nav-item { justify-content: center; padding: 12px; margin: 0 4px; }
-  .page-content { padding: 16px; }
-  .stats-grid { grid-template-columns: 1fr 1fr; }
+
+  /* Sidebar: full-width overlay, hidden off-screen by default */
+  .sidebar {
+    width: 240px;
+    transform: translateX(-100%);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+    z-index: 200;
+  }
+
+  /* Show sidebar when open */
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  /* Overlay backdrop */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 199;
+    backdrop-filter: blur(2px);
+  }
+  .sidebar-backdrop.active { display: block; }
+
+  /* Main content takes full width */
+  .main-content { margin-left: 0; }
+
+  /* Show hamburger button on mobile */
+  .topbar { justify-content: space-between; padding: 0 16px; }
+  .topbar-toggle { display: flex; }
+
+  /* Page padding */
+  .page-content { padding: 16px 14px; }
+
+  /* Page title smaller */
+  .page-title { font-size: 1.25rem; }
+
+  /* Stats grid → 2 columns */
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat-card  { padding: 14px 12px; gap: 10px; }
+  .stat-value { font-size: 1.15rem; }
+  .stat-icon  { width: 38px; height: 38px; }
+
+  /* Predict layout → single column */
+  .predict-layout { grid-template-columns: 1fr; gap: 14px; }
+  .predict-form-panel, .predict-result-panel { padding: 18px 16px; }
+
+  /* Form rows → single column */
+  .form-row-2 { grid-template-columns: 1fr; gap: 10px; }
+
+  /* Amenity row → 3 equal columns (keep) */
+  .amenity-row { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .amenity-box { padding: 10px 6px; }
+  .amenity-emoji { font-size: 1.2rem; }
+
+  /* Result mini cards → 3 columns (keep) */
+  .result-mini-cards { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .mini-card { padding: 10px 8px; }
+  .mini-value { font-size: 0.82rem; }
+
+  /* Price value smaller */
+  .price-box-value { font-size: 1.9rem; }
+  .rupee-symbol    { font-size: 1.4rem; }
+
+  /* Dashboard */
+  .dashboard-body  { grid-template-columns: 1fr; }
+  .welcome-card    { padding: 20px 16px; }
+  .welcome-title   { font-size: 1rem; }
+  .quick-links-card { padding: 16px; }
+
+  /* Insights */
+  .insights-layout { grid-template-columns: 1fr; }
+  .data-stats-row  { grid-template-columns: repeat(2, 1fr); }
+  .insights-card   { padding: 18px 14px; }
+
+  /* Model info */
+  .model-info-layout { grid-template-columns: 1fr; }
+  .model-right-panel { grid-template-columns: 1fr; }
+
+  /* About */
   .about-grid { grid-template-columns: 1fr; }
-  .form-row-2 { grid-template-columns: 1fr; }
-  .result-mini-cards { grid-template-columns: 1fr; }
-  .amenity-row { grid-template-columns: 1fr 1fr 1fr; }
+
+  /* Sidebar footer visible on mobile overlay */
+  .sidebar-footer { display: block; }
+  .logo-text, .nav-item span { display: flex; }
+  .nav-item { justify-content: flex-start; padding: 10px 16px; }
+
+  /* Similar properties - tighter */
+  .similar-item { gap: 8px; }
+  .similar-img-wrap { width: 42px; height: 42px; }
+  .similar-price { font-size: 0.8rem; }
+}
+
+/* ── Very small phones (≤ 400px) ───────────────────── */
+@media (max-width: 400px) {
+  .stats-grid         { grid-template-columns: 1fr; }
+  .result-mini-cards  { grid-template-columns: 1fr; gap: 8px; }
+  .amenity-row        { grid-template-columns: 1fr 1fr 1fr; }
+  .page-content       { padding: 12px 10px; }
+  .price-box-value    { font-size: 1.6rem; }
+  .predict-form-panel, .predict-result-panel { padding: 14px 12px; }
 }
