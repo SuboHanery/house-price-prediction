@@ -287,6 +287,10 @@ def service_worker():
     response.headers['Cache-Control'] = 'no-cache'
     return response
 
+@app.route('/install')
+def install_page():
+    return render_template('install.html', active='install')
+
 @app.route('/api/download-model')
 def download_model():
     try:

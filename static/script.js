@@ -331,55 +331,35 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// ─── PWA: Show Install Banner ─────────────────────────────────────────────────
-let deferredPrompt;
+// ─── PWA: Capture install prompt silently (used by Install page) ──────────────
+let deferredInstallPrompt = null;
 window.addEventListener('beforeinstallprompt', e => {
     e.preventDefault();
-    deferredPrompt = e;
-
-    // Show a subtle install banner at the top
-    const banner = document.createElement('div');
-    banner.id = 'installBanner';
-    banner.innerHTML = `
-        <div style="
-            position:fixed; top:0; left:0; right:0; z-index:999;
-            background:linear-gradient(135deg,#1a73e8,#0d47a1);
-            color:white; padding:12px 16px;
-            display:flex; align-items:center; justify-content:space-between;
-            font-size:0.85rem; font-weight:500;
-            box-shadow:0 2px 12px rgba(0,0,0,0.2);
-        ">
-            <span>🏠 Install House Price App on your phone!</span>
-            <div style="display:flex;gap:8px;">
-                <button id="installBtn" style="
-                    background:white; color:#1a73e8; border:none;
-                    padding:6px 14px; border-radius:20px;
-                    font-weight:700; cursor:pointer; font-size:0.82rem;
-                ">Install</button>
-                <button id="dismissBanner" style="
-                    background:transparent; color:rgba(255,255,255,0.8);
-                    border:none; cursor:pointer; font-size:1.1rem; padding:2px 6px;
-                ">✕</button>
-            </div>
-        </div>
-    `;
-    document.body.prepend(banner);
-
-    document.getElementById('installBtn').addEventListener('click', () => {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(choice => {
-            if (choice.outcome === 'accepted') banner.remove();
-            deferredPrompt = null;
-        });
-    });
-
-    document.getElementById('dismissBanner').addEventListener('click', () => {
-        banner.remove();
-    });
+    deferredInstallPrompt = e;
+    // Mark install button as available if on install page
+    const btn = document.getElementById('pwaInstallBtn');
+    if (btn) {
+        btn.disabled = false;
+        btn.textContent = '📲 Install App Now';
+    }
 });
 
 window.addEventListener('appinstalled', () => {
-    const banner = document.getElementById('installBanner');
-    if (banner) banner.remove();
-    console.log('PWA installed!');
+    deferredInstallPrompt = null;
+    const btn = document.getElementById('pwaInstallBtn');
+    if (btn) {
+        btn.textContent = '✅ App Installed!';
+        btn.disabled = true;
+        btn.style.background = '#34a853';
+    }
 });
+
+// Called from Install page button
+function triggerInstall() {
+    if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt.userChoice.then(choice => {
+            deferredInstallPrompt = null;
+        });
+    }
+}

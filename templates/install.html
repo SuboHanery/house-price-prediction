@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block title %}Install App — HousePrice AI{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h1 class="page-title">📲 Install App</h1>
+    <p class="page-subtitle">Add HousePrice AI to your phone — works like a native app</p>
+</div>
+
+<!-- Install Card -->
+<div class="install-hero-card">
+    <div class="install-hero-left">
+        <img src="/static/icon-512.png" alt="HousePrice App Icon" class="install-app-icon">
+        <div>
+            <p class="install-app-name">HousePrice AI</p>
+            <p class="install-app-sub">Bangalore Real Estate Predictor</p>
+            <div class="install-badges">
+                <span class="install-badge">⚡ Fast</span>
+                <span class="install-badge">📵 Works Offline</span>
+                <span class="install-badge">🆓 Free</span>
+            </div>
+        </div>
+    </div>
+    <button id="pwaInstallBtn" class="btn-install-big" onclick="triggerInstall()" disabled>
+        ⏳ Loading...
+    </button>
+</div>
+
+<!-- Features Grid -->
+<div class="install-features-grid">
+    <div class="install-feature-card">
+        <div class="install-feature-icon">🏠</div>
+        <h3 class="install-feature-title">Instant Predictions</h3>
+        <p class="install-feature-desc">Get Bangalore house price estimates in seconds using our AI model trained on 13,320 real properties.</p>
+    </div>
+    <div class="install-feature-card">
+        <div class="install-feature-icon">📵</div>
+        <h3 class="install-feature-title">Works Offline</h3>
+        <p class="install-feature-desc">The app loads instantly even without internet. Predictions need connection but the interface stays fast.</p>
+    </div>
+    <div class="install-feature-card">
+        <div class="install-feature-icon">📱</div>
+        <h3 class="install-feature-title">Native Feel</h3>
+        <p class="install-feature-desc">Opens full screen with no browser bar. Has its own app icon on your home screen just like any other app.</p>
+    </div>
+    <div class="install-feature-card">
+        <div class="install-feature-icon">🔒</div>
+        <h3 class="install-feature-title">No Play Store Needed</h3>
+        <p class="install-feature-desc">Install directly from your browser — no account, no app store, no download waiting. Just tap and install.</p>
+    </div>
+</div>
+
+<!-- Step by step guide -->
+<div class="install-guide-card">
+    <h2 class="insights-section-title">How to Install</h2>
+
+    <div class="install-tabs">
+        <button class="install-tab active" onclick="showTab('android')">🤖 Android</button>
+        <button class="install-tab" onclick="showTab('iphone')">🍎 iPhone</button>
+    </div>
+
+    <div id="tab-android" class="install-tab-content">
+        <div class="install-step">
+            <div class="install-step-num">1</div>
+            <div class="install-step-body">
+                <p class="install-step-title">Click the Install button above</p>
+                <p class="install-step-desc">If the button is active, tap it and Chrome will show a prompt to install.</p>
+            </div>
+        </div>
+        <div class="install-step">
+            <div class="install-step-num">2</div>
+            <div class="install-step-body">
+                <p class="install-step-title">OR open Chrome menu (⋮)</p>
+                <p class="install-step-desc">Tap the 3 dots in top-right corner of Chrome browser.</p>
+            </div>
+        </div>
+        <div class="install-step">
+            <div class="install-step-num">3</div>
+            <div class="install-step-body">
+                <p class="install-step-title">Tap "Add to Home Screen"</p>
+                <p class="install-step-desc">Then tap "Install" on the popup — the app icon will appear on your home screen!</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-iphone" class="install-tab-content" style="display:none">
+        <div class="install-step">
+            <div class="install-step-num">1</div>
+            <div class="install-step-body">
+                <p class="install-step-title">Open in Safari browser</p>
+                <p class="install-step-desc">PWA install only works in Safari on iPhone. Copy the link and open in Safari.</p>
+            </div>
+        </div>
+        <div class="install-step">
+            <div class="install-step-num">2</div>
+            <div class="install-step-body">
+                <p class="install-step-title">Tap the Share button (□↑)</p>
+                <p class="install-step-desc">Find the share icon at the bottom center of the Safari browser.</p>
+            </div>
+        </div>
+        <div class="install-step">
+            <div class="install-step-num">3</div>
+            <div class="install-step-body">
+                <p class="install-step-title">Tap "Add to Home Screen"</p>
+                <p class="install-step-desc">Scroll down in the share sheet, tap "Add to Home Screen", then tap "Add".</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showTab(tab) {
+    document.querySelectorAll('.install-tab-content').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.install-tab').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + tab).style.display = 'block';
+    event.target.classList.add('active');
+}
+// Enable install button if prompt already fired
+window.addEventListener('DOMContentLoaded', () => {
+    if (window.deferredInstallPrompt) {
+        const btn = document.getElementById('pwaInstallBtn');
+        if (btn) { btn.disabled = false; btn.textContent = '📲 Install App Now'; }
+    }
+});
+</script>
+
+{% endblock %}
