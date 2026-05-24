@@ -3,7 +3,28 @@
    Matches the reference UI: sidebar layout, clean white
    ══════════════════════════════════════════════════════ */
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  /* Prevent ANY element from overflowing the screen width */
+  max-width: 100%;
+}
+
+/* Force all text to wrap — fixes code tags overflowing on mobile */
+p, span, li, td, th, h1, h2, h3, h4, h5, h6, a, label, div {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Inline code tags — the main culprit */
+code, pre, kbd, samp {
+  overflow-wrap: break-word;
+  word-break: break-all;
+  white-space: pre-wrap;
+  max-width: 100%;
+  display: inline-block;
+}
 
 html {
   scroll-behavior: smooth;
