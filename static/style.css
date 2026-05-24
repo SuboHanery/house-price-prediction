@@ -949,6 +949,13 @@ body {
 .impact-table tr:last-child td { border-bottom: none; }
 .impact-table tr:hover td { background: var(--bg); }
 
+/* Mobile table: smaller cells, prevent overflow */
+@media (max-width: 700px) {
+  .impact-table { font-size: 0.78rem; min-width: 420px; }
+  .impact-table th { padding: 8px 10px; font-size: 0.68rem; }
+  .impact-table td { padding: 10px 10px; }
+}
+
 .best-model-row td { background: var(--blue-light) !important; }
 
 .amenity-badge {
