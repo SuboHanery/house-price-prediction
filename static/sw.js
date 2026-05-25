@@ -1,7 +1,8 @@
 /* House Price Prediction — Service Worker
    Caches static assets for fast loading & offline shell */
 
-const CACHE_NAME = 'houseprice-v5';
+const CACHE_NAME = 'houseprice-v6';
+
 
 
 

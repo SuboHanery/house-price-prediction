@@ -1040,7 +1040,10 @@ body {
   margin-top: 2px;
 }
 
-.step-body {}
+.step-body {
+  flex: 1;
+  min-width: 0;
+}
 
 .step-title {
   font-weight: 700;
