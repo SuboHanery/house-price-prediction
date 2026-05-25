@@ -23,12 +23,21 @@ p, span, li, td, th, h1, h2, h3, h4, h5, h6, a, label {
 }
 
 /* Inline code tags — prevent them overflowing */
-code, pre, kbd, samp {
+/* Inline code: stays inline so it wraps naturally inside paragraphs.
+   inline-block would create a block that overflows on narrow screens. */
+code, kbd, samp {
+  overflow-wrap: break-word;
+  word-break: break-all;
+  white-space: normal;
+  max-width: 100%;
+  display: inline;
+}
+pre {
   overflow-wrap: break-word;
   word-break: break-all;
   white-space: pre-wrap;
   max-width: 100%;
-  display: inline-block;
+  overflow-x: auto;
 }
 
 html {
@@ -1754,7 +1763,21 @@ code {
   .pipeline-step-item { gap: 12px; padding: 12px 0; }
   .step-num      { width: 30px; height: 30px; font-size: 0.85rem; flex-shrink: 0; }
   .file-name     { font-size: 0.78rem; word-break: break-all; }
-  .model-pipeline-card { overflow: hidden; }
+  /* DO NOT use overflow:hidden on cards — clips text instead of wrapping */
+  .model-pipeline-card { overflow: visible; }
+  /* Force all paragraph text to wrap on mobile */
+  .page-content p,
+  .step-desc,
+  .insights-para,
+  .timeline-desc,
+  .about-hero-desc,
+  .install-feature-desc,
+  .install-step-desc {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    max-width: 100%;
+    hyphens: auto;
+  }
 
   /* ABOUT PAGE ─────────────────────────────────────────────── */
   .about-hero-card  { padding: 24px 16px; margin-bottom: 14px; }
