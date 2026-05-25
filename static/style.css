@@ -7,17 +7,20 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  /* Prevent ANY element from overflowing the screen width */
+}
+
+/* Prevent non-SVG elements from overflowing screen */
+img, video, iframe, embed, object {
   max-width: 100%;
 }
 
-/* Force all text to wrap — fixes code tags overflowing on mobile */
-p, span, li, td, th, h1, h2, h3, h4, h5, h6, a, label, div {
+/* Force text to wrap — fixes code tags overflowing on mobile */
+p, span, li, td, th, h1, h2, h3, h4, h5, h6, a, label {
   overflow-wrap: break-word;
   word-break: break-word;
 }
 
-/* Inline code tags — the main culprit */
+/* Inline code tags — prevent them overflowing */
 code, pre, kbd, samp {
   overflow-wrap: break-word;
   word-break: break-all;
@@ -1503,7 +1506,7 @@ code {
   .install-features-grid { grid-template-columns: 1fr; }
 }
 
-   ══════════════════════════════════════════════════════════════ */
+
 
 /* ── Bottom Nav Bar (mobile only, hidden on desktop) ──────── */
 .mobile-nav {
