@@ -251,8 +251,12 @@ body {
   flex-direction: column;
   min-height: 100vh;
   overflow-x: hidden;
-  max-width: calc(100vw - var(--sidebar-w));
+  /* Do NOT subtract sidebar width here — on mobile sidebar is hidden
+     and this calc makes content 220px narrower than the screen */
+  min-width: 0;
+  width: 0; /* flex child: let flex-grow:1 handle the width */
 }
+
 
 /* Top bar */
 .topbar {
@@ -1569,9 +1573,31 @@ code {
   .sidebar          { display: none; }
   .sidebar-backdrop { display: none !important; }
   .main-content     {
-    margin-left: 0;
-    max-width: 100vw;
+    margin-left: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
     overflow-x: hidden;
+  }
+
+  /* ── CRITICAL: All grid/flex children must have min-width:0 ─
+     Without this, grid items grow to fit their content and overflow.
+     This single rule fixes overflow on ALL pages. ──────────── */
+  .model-info-layout > *,
+  .model-info-layout > * > *,
+  .pipeline-step-item,
+  .step-body,
+  .predict-layout > *,
+  .insights-layout > *,
+  .dashboard-body > *,
+  .about-grid > *,
+  .install-features-grid > *,
+  .stats-grid > *,
+  .data-stats-row > *,
+  .result-mini-cards > * {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   /* ── Hide hamburger (not needed with bottom nav) ─────────── */
