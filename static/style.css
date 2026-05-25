@@ -9,7 +9,9 @@
   padding: 0;
 }
 
-/* Prevent non-SVG elements from overflowing screen */
+/* Prevent non-SVG media elements from overflowing screen.
+   SVGs are intentionally excluded — applying max-width:100% to SVGs
+   with explicit width/height can cause them to render as large squares. */
 img, video, iframe, embed, object {
   max-width: 100%;
 }
@@ -32,6 +34,7 @@ code, pre, kbd, samp {
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  max-width: 100vw;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -42,6 +45,7 @@ body {
   display: flex;
   min-height: 100vh;
   overflow-x: hidden;
+  max-width: 100vw;
   width: 100%;
   transition: background var(--transition), color var(--transition);
 }
@@ -237,6 +241,8 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  overflow-x: hidden;
+  max-width: calc(100vw - var(--sidebar-w));
 }
 
 /* Top bar */
@@ -323,6 +329,13 @@ body {
 .stat-icon-green  { background: var(--green-light); color: var(--green); }
 .stat-icon-yellow { background: var(--yellow-light); color: #9a6c00; }
 .stat-icon-teal   { background: var(--teal-light);  color: var(--teal); }
+
+/* Stat values should never wrap — use smaller size + nowrap */
+.stat-value {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 .stat-info {}
 .stat-label { font-size: 0.75rem; color: var(--text-sub); margin-bottom: 4px; }
@@ -523,7 +536,8 @@ body {
   padding: 10px 12px 10px 34px;
   border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
-  font-size: 0.9rem;
+  /* 16px minimum prevents iOS Safari auto-zoom on focus */
+  font-size: 16px;
   font-family: var(--font);
   color: var(--text-main);
   background: var(--surface);
@@ -887,9 +901,9 @@ body {
 
 .feature-bar-row {
   display: grid;
-  grid-template-columns: 220px 1fr 120px;
+  grid-template-columns: minmax(120px, 220px) 1fr 110px;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .feature-name { font-size: 0.85rem; color: var(--text-main); }
@@ -1525,9 +1539,10 @@ code {
 }
 
 @media (max-width: 900px) {
-  .feature-bar-row { grid-template-columns: 1fr; }
+  .feature-bar-row { grid-template-columns: 1fr; gap: 6px; }
+  .impact-label    { text-align: left; }
   .data-stats-row  { grid-template-columns: repeat(2, 1fr); }
-  .page-content    { padding: 20px 18px; }
+  .page-content    { padding: 20px 16px; }
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1535,10 +1550,20 @@ code {
    ══════════════════════════════════════════════════════════════ */
 @media (max-width: 700px) {
 
+  /* ── Prevent any horizontal overflow at root level ───────── */
+  html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+  }
+
   /* ── Hide desktop sidebar completely ─────────────────────── */
   .sidebar          { display: none; }
   .sidebar-backdrop { display: none !important; }
-  .main-content     { margin-left: 0; }
+  .main-content     {
+    margin-left: 0;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
 
   /* ── Hide hamburger (not needed with bottom nav) ─────────── */
   .topbar-toggle { display: none; }
@@ -1568,6 +1593,8 @@ code {
     border-top: 1px solid var(--border);
     z-index: 300;
     box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+    /* Safe area inset for iPhone home bar */
+    padding-bottom: env(safe-area-inset-bottom, 0);
   }
 
   .mobile-nav-item {
@@ -1582,15 +1609,23 @@ code {
     font-size: 0.6rem;
     font-weight: 500;
     padding: 6px 4px;
+    /* Ensure ≥44px touch target */
+    min-height: 44px;
     transition: color 0.2s, background 0.2s;
     border-radius: 8px;
     margin: 4px 2px;
   }
 
+  /* SVG icons in bottom nav must never be styled as blocks */
   .mobile-nav-item svg {
-    width: 22px; height: 22px;
+    width: 22px;
+    height: 22px;
     stroke: currentColor;
     flex-shrink: 0;
+    /* Never auto-stretch SVG width */
+    min-width: 22px;
+    max-width: none;
+    display: inline-block;
   }
 
   .mobile-nav-item.active {
@@ -1602,121 +1637,205 @@ code {
     transform: scale(0.92);
   }
 
-  /* ── Add bottom padding so content doesn't go under nav ──── */
+  /* ── Content padding (above bottom nav, never overlaps) ─── */
+  /* 62px nav + 20px breathing room = 82px */
   .page-content {
-    padding: 14px 12px 80px;
+    padding: 14px 16px 82px;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   /* ── Page header ─────────────────────────────────────────── */
-  .page-title    { font-size: 1.2rem; }
-  .page-subtitle { font-size: 0.82rem; }
-  .page-header   { margin-bottom: 16px; }
+  .page-title    { font-size: 1.15rem; }
+  .page-subtitle { font-size: 0.80rem; }
+  .page-header   { margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
 
-  /* ── Stats cards → 2 columns ─────────────────────────────── */
-  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .stat-card  { padding: 14px 12px; gap: 10px; border-radius: 12px; }
-  .stat-value { font-size: 1.15rem; }
-  .stat-label { font-size: 0.7rem; }
-  .stat-icon  { width: 36px; height: 36px; border-radius: 10px; }
+  /* DASHBOARD ──────────────────────────────────────────────── */
+  .stats-grid  { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .stat-card   {
+    padding: 12px 10px;
+    gap: 8px;
+    border-radius: 12px;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .stat-icon   { width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0; }
+  /* stat-value: force nowrap and shrink font so value never breaks layout */
+  .stat-value  {
+    font-size: 1.0rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  .stat-label  { font-size: 0.64rem; line-height: 1.3; white-space: normal; }
+  .stat-info   { min-width: 0; overflow: hidden; flex: 1; }
 
-  /* ── Dashboard ───────────────────────────────────────────── */
-  .dashboard-body   { grid-template-columns: 1fr; gap: 14px; }
-  .welcome-card     { padding: 18px 16px; }
-  .welcome-title    { font-size: 1rem; }
-  .welcome-text     { font-size: 0.85rem; }
-  .quick-links-card { padding: 16px; }
-  .btn-start        { padding: 14px; font-size: 1rem; border-radius: 12px; }
+  .dashboard-body   { grid-template-columns: 1fr; gap: 12px; }
+  .welcome-card     { padding: 16px 14px; }
+  .welcome-title    { font-size: 0.95rem; }
+  .welcome-text     { font-size: 0.83rem; line-height: 1.6; }
+  .highlight-chips  { gap: 6px; margin: 12px 0; }
+  .chip             { font-size: 0.70rem; padding: 3px 9px; }
+  .quick-links-card { padding: 14px; }
+  .quick-item       { font-size: 0.82rem; padding: 10px 0; min-height: 44px; }
+  .btn-start        { padding: 14px; font-size: 0.95rem; border-radius: 12px; min-height: 48px; }
 
-  /* ── Predict page ────────────────────────────────────────── */
-  .predict-layout      { grid-template-columns: 1fr; gap: 12px; }
+  /* PREDICT PAGE ───────────────────────────────────────────── */
+  .predict-layout       { grid-template-columns: 1fr; gap: 12px; }
   .predict-form-panel,
-  .predict-result-panel { padding: 18px 14px; border-radius: 14px; }
+  .predict-result-panel { padding: 16px 14px; border-radius: 14px; }
+  .panel-header         { font-size: 0.92rem; margin-bottom: 14px; }
+  .form-label           { font-size: 0.73rem; margin-bottom: 7px; }
+  .form-group           { margin-bottom: 12px; }
+  /* Keep 2 columns on mobile for bedrooms/bathrooms row — saves vertical space */
+  .form-row-2           { grid-template-columns: 1fr 1fr; gap: 10px; }
 
-  /* Inputs: 16px font prevents iOS auto-zoom */
+  /* 16px prevents iOS Safari auto-zoom on input focus */
   .select-wrapper select,
-  .input-wrapper input {
-    font-size: 16px;
-    padding: 13px 14px 13px 38px;
-    border-radius: 10px;
+  .input-wrapper input  {
+    font-size: 16px !important;
+    padding: 12px 12px 12px 36px;
     min-height: 48px;
+    border-radius: 10px;
   }
 
-  .form-label  { font-size: 0.75rem; margin-bottom: 8px; }
-  .form-group  { margin-bottom: 14px; }
-  .form-row-2  { grid-template-columns: 1fr; gap: 12px; }
+  .amenity-row  { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .amenity-box  { padding: 12px 4px; border-radius: 12px; min-height: 68px; }
+  .amenity-emoji { font-size: 1.4rem; }
+  .amenity-label { font-size: 0.68rem; }
+  .btn-predict  { padding: 15px; font-size: 0.95rem; border-radius: 12px; min-height: 52px; }
 
-  /* Amenities: bigger tap targets */
-  .amenity-row { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-  .amenity-box {
-    padding: 14px 6px;
-    border-radius: 12px;
-    min-height: 72px;
-    justify-content: center;
-  }
-  .amenity-emoji { font-size: 1.5rem; }
-  .amenity-label { font-size: 0.7rem; }
-
-  /* Predict button: big, thumb-friendly */
-  .btn-predict {
-    padding: 16px;
-    font-size: 1rem;
-    border-radius: 12px;
-    margin-top: 8px;
-    min-height: 54px;
-  }
-
-  /* ── Result panel ────────────────────────────────────────── */
-  .result-price-box  { padding: 22px 16px; border-radius: 14px; }
-  .price-box-value   { font-size: 2.2rem; }
-  .rupee-symbol      { font-size: 1.6rem; }
-  .price-box-sqft    { font-size: 0.85rem; }
-
+  .result-price-box  { padding: 20px 14px; border-radius: 14px; }
+  .price-box-value   { font-size: 2rem; }
+  .rupee-symbol      { font-size: 1.5rem; }
   .result-mini-cards { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-  .mini-card  { padding: 10px 6px; border-radius: 10px; }
-  .mini-label { font-size: 0.65rem; }
-  .mini-value { font-size: 0.82rem; }
+  .mini-card         { padding: 10px 6px; border-radius: 10px; }
+  .mini-label        { font-size: 0.63rem; }
+  .mini-value        { font-size: 0.8rem; }
+  .similar-props-box { border-radius: 12px; padding: 12px 10px; }
+  .similar-item      { padding: 10px 0; gap: 10px; }
+  .similar-img-wrap  { width: 48px; height: 48px; border-radius: 10px; }
+  .similar-title     { font-size: 0.83rem; }
+  .similar-location  { font-size: 0.70rem; }
+  .similar-price     { font-size: 0.83rem; }
 
-  /* Similar properties */
-  .similar-props-box  { border-radius: 12px; padding: 14px 12px; }
-  .similar-item       { padding: 10px 0; gap: 10px; }
-  .similar-img-wrap   { width: 50px; height: 50px; border-radius: 10px; }
-  .similar-title      { font-size: 0.85rem; }
-  .similar-location   { font-size: 0.72rem; }
-  .similar-price      { font-size: 0.85rem; font-weight: 700; }
-
-  /* ── Insights ────────────────────────────────────────────── */
-  .insights-layout { grid-template-columns: 1fr; }
-  .data-stats-row  { grid-template-columns: 1fr 1fr; gap: 8px; }
+  /* INSIGHTS PAGE ──────────────────────────────────────────── */
+  .insights-layout { grid-template-columns: 1fr; gap: 12px; }
   .insights-card, .feature-importance-card, .amenity-impact-card {
-    padding: 16px 14px;
-    border-radius: 14px;
-    margin-bottom: 14px;
+    padding: 16px 12px; border-radius: 14px; margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .insights-section-title { font-size: 0.92rem; }
+  .insights-para          { font-size: 0.82rem; }
+  .data-stats-row         { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .data-stat-box          { padding: 10px 8px; }
+  .data-stat-num          { font-size: 1.2rem; }
+  .data-stat-label        { font-size: 0.68rem; }
+  .market-trend-card      { padding: 20px 14px; }
+  /* Feature bar rows collapse to single column stacked layout on mobile */
+  .feature-bar-row        { grid-template-columns: 1fr; gap: 4px; }
+  .impact-label           { font-size: 0.68rem; text-align: left; }
+  .feature-name           { font-size: 0.78rem; }
+  /* Tables: always wrap in scrollable container */
+  .amenity-impact-card .impact-table,
+  .model-pipeline-card .impact-table {
+    min-width: 440px;
   }
 
-  /* ── Model info ──────────────────────────────────────────── */
-  .model-info-layout { grid-template-columns: 1fr; }
-  .model-right-panel { grid-template-columns: 1fr; }
+  /* MODEL INFO PAGE ────────────────────────────────────────── */
+  .model-info-layout  { grid-template-columns: 1fr; gap: 12px; }
+  .model-right-panel  { grid-template-columns: 1fr; gap: 12px; display: grid; }
+  .performance-card, .model-file-card { padding: 16px 14px; border-radius: 14px; }
+  .perf-score    { font-size: 2.4rem; }
+  .step-title    { font-size: 0.88rem; }
+  .step-desc     { font-size: 0.80rem; }
+  .pipeline-step-item { gap: 12px; padding: 12px 0; }
+  .step-num      { width: 30px; height: 30px; font-size: 0.85rem; flex-shrink: 0; }
+  .file-name     { font-size: 0.78rem; word-break: break-all; }
+  .model-pipeline-card { overflow: hidden; }
 
-  /* ── About ───────────────────────────────────────────────── */
-  .about-grid { grid-template-columns: 1fr; gap: 12px; }
+  /* ABOUT PAGE ─────────────────────────────────────────────── */
+  .about-hero-card  { padding: 24px 16px; margin-bottom: 14px; }
+  .about-hero-title { font-size: 1.05rem; }
+  .about-hero-desc  { font-size: 0.82rem; line-height: 1.65; }
+
+  /* 2-column grid for tech cards on mobile — better than 1-col */
+  .about-grid      { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .about-tech-card { padding: 14px 12px; border-radius: 12px; }
+  .tech-card-header { font-size: 0.80rem; margin-bottom: 10px; padding-bottom: 8px; gap: 6px; }
+  .tech-icon       { width: 24px; height: 24px; flex-shrink: 0; }
+  .tech-list       { gap: 5px; }
+  .tech-list li    { font-size: 0.78rem; }
+
+  .about-timeline-card { padding: 16px 14px; border-radius: 14px; }
+  .timeline-item       { gap: 12px; padding-bottom: 18px; }
+  /* Timeline line aligned with smaller dot */
+  .timeline-item:not(:last-child)::before { left: 11px; }
+  .timeline-dot        { width: 24px; height: 24px; font-size: 0.68rem; flex-shrink: 0; }
+  .timeline-title      { font-size: 0.85rem; }
+  .timeline-desc       { font-size: 0.78rem; line-height: 1.55; }
+
+  /* INSTALL PAGE ───────────────────────────────────────────── */
+  .install-hero-card     { flex-direction: column; align-items: flex-start; padding: 18px 14px; gap: 14px; }
+  .install-hero-left     { gap: 12px; }
+  .install-app-icon      { width: 60px !important; height: 60px !important; max-width: 60px !important; }
+  .install-app-name      { font-size: 1.1rem; }
+  .btn-install-big       { width: 100%; padding: 15px; font-size: 1rem; min-height: 52px; }
+  .install-features-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .install-feature-card  { padding: 14px 12px; border-radius: 12px; }
+  .install-feature-icon  { font-size: 1.4rem; margin-bottom: 8px; }
+  .install-feature-title { font-size: 0.85rem; }
+  .install-feature-desc  { font-size: 0.78rem; }
+  .install-guide-card    { padding: 16px 12px; border-radius: 14px; }
+  .install-step          { gap: 12px; padding: 12px 0; min-height: 44px; align-items: center; }
+  .install-step-num      { width: 32px; height: 32px; font-size: 0.82rem; flex-shrink: 0; min-width: 32px; }
+  .install-step-title    { font-size: 0.85rem; }
+  .install-step-desc     { font-size: 0.78rem; }
+  .install-tab           { padding: 8px 14px; font-size: 0.8rem; min-height: 44px; }
+
+  .btn-outline { font-size: 0.78rem; padding: 8px 12px; min-height: 44px; }
+
+  /* ── Safe area support for notched iPhones ───────────────── */
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .page-content {
+      padding-bottom: calc(82px + env(safe-area-inset-bottom));
+    }
+    .mobile-nav {
+      height: calc(62px + env(safe-area-inset-bottom));
+    }
+  }
 }
 
 /* ── Very small phones (≤ 400px) ──────────────────────────── */
 @media (max-width: 400px) {
-  .stats-grid  { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .stat-card   { padding: 12px 10px; }
-  .stat-value  { font-size: 1rem; }
+  .page-content  { padding: 10px 12px 82px; }
+  .stats-grid    { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-card     { padding: 10px 8px; }
+  .stat-value    { font-size: 0.92rem; }
 
-  .result-mini-cards { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-  .mini-label { font-size: 0.6rem; }
+  /* Stack tech cards to 1-col on tiny phones */
+  .about-grid    { grid-template-columns: 1fr; }
 
-  .price-box-value   { font-size: 1.8rem; }
+  /* Predict page — keep form-row as 1 col on tiny phones */
+  .form-row-2           { grid-template-columns: 1fr; }
+
+  .result-mini-cards    { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .price-box-value      { font-size: 1.8rem; }
   .predict-form-panel,
-  .predict-result-panel { padding: 14px 12px; }
+  .predict-result-panel { padding: 12px 10px; }
 
-  .page-content { padding: 12px 10px 80px; }
-  .amenity-box  { padding: 12px 4px; min-height: 65px; }
-  .btn-predict  { padding: 14px; font-size: 0.95rem; }
+  .install-features-grid { grid-template-columns: 1fr 1fr; }
+
+  .amenity-row   { grid-template-columns: 1fr 1fr 1fr; }
+  .amenity-box   { padding: 10px 3px; min-height: 62px; }
+  .amenity-label { font-size: 0.62rem; }
+  .btn-predict   { padding: 13px; font-size: 0.9rem; }
+
+  /* Stat cards — minimal size but still readable */
+  .stat-label  { font-size: 0.60rem; }
+
+  /* Timeline — more compact */
+  .timeline-item { gap: 10px; }
 }
-
-
